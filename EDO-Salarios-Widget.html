@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas EDO Salarios - ValCusySoft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .controls-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid #667eea;
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .control-group input,
+        .control-group select {
+            padding: 10px 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .control-group input:focus,
+        .control-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .buttons-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+            padding: 40px;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        thead {
+            background: #f8f9fa;
+            border-bottom: 2px solid #667eea;
+        }
+
+        th {
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #555;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-size: 16px;
+        }
+
+        .export-btn {
+            background: #28a745;
+        }
+
+        .export-btn:hover {
+            background: #218838;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 EDO Salarios</h1>
+            <p>Consulta y filtra movimientos bancarios</p>
+        </div>
+
+        <div class="controls-section">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="searchInput">Buscar en todos los campos:</label>
+                    <input type="text" id="searchInput" placeholder="Ej: Nombre, cantidad, etc...">
+                </div>
+                <div class="control-group">
+                    <label for="bancoFilter">Filtrar por Banco:</label>
+                    <select id="bancoFilter">
+                        <option value="">-- Todos los Bancos --</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="tipoFilter">Filtrar por Tipo:</label>
+                    <select id="tipoFilter">
+                        <option value="">-- Todos los Tipos --</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="tipopagoFilter">Filtrar por Tipo de Pago:</label>
+                    <select id="tipopagoFilter">
+                        <option value="">-- Todos --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="buttons-group">
+                <button class="btn btn-primary" id="filterBtn">🔍 Buscar</button>
+                <button class="btn btn-secondary" id="resetBtn">↻ Limpiar Filtros</button>
+                <button class="btn btn-secondary export-btn" id="exportBtn">📥 Descargar CSV</button>
+            </div>
+        </div>
+
+        <div id="statsContainer"></div>
+        <div id="errorContainer"></div>
+        <div id="loadingContainer"></div>
+        <div id="tableContainer"></div>
+    </div>
+
+    <script>
+        const SHEET_ID = '1UujvDo7iFw2iJg6ehXBKvvB69D7bj_9eUg12J_bysy8';
+        const GID = '1754383156';
+        const CSV_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${GID}`;
+
+        let allData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+
+        // Cargar datos desde Google Sheets
+        async function loadData() {
+            const loadingContainer = document.getElementById('loadingContainer');
+            const errorContainer = document.getElementById('errorContainer');
+            
+            loadingContainer.innerHTML = '<div class="loading">📊 Cargando datos...</div>';
+            errorContainer.innerHTML = '';
+
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error('Error al cargar datos');
+                
+                const csv = await response.text();
+                allData = parseCSV(csv);
+                filteredData = [...allData];
+                
+                loadingContainer.innerHTML = '';
+                populateFilters();
+                displayData();
+                displayStats();
+            } catch (error) {
+                errorContainer.innerHTML = `<div class="error">❌ Error al cargar los datos: ${error.message}</div>`;
+                loadingContainer.innerHTML = '';
+                console.error('Error:', error);
+            }
+        }
+
+        // Parsear CSV
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            if (lines.length < 2) return [];
+
+            const headers = lines[0].split(',').map(h => h.trim());
+            const data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',').map(v => v.trim());
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header] = values[index] || '';
+                });
+                if (Object.values(row).some(v => v)) {
+                    data.push(row);
+                }
+            }
+
+            return data;
+        }
+
+        // Llenar opciones de filtros
+        function populateFilters() {
+            const bancos = [...new Set(allData.map(d => d['Banco']).filter(Boolean))];
+            const tipos = [...new Set(allData.map(d => d['Tipo']).filter(Boolean))];
+            const tipospago = [...new Set(allData.map(d => d['Tipo de pago']).filter(Boolean))];
+
+            const bancoSelect = document.getElementById('bancoFilter');
+            const tipoSelect = document.getElementById('tipoFilter');
+            const tipopagoSelect = document.getElementById('tipopagoFilter');
+
+            bancos.forEach(banco => {
+                const option = document.createElement('option');
+                option.value = banco;
+                option.textContent = banco;
+                bancoSelect.appendChild(option);
+            });
+
+            tipos.forEach(tipo => {
+                const option = document.createElement('option');
+                option.value = tipo;
+                option.textContent = tipo;
+                tipoSelect.appendChild(option);
+            });
+
+            tipospago.forEach(tipopago => {
+                const option = document.createElement('option');
+                option.value = tipopago;
+                option.textContent = tipopago;
+                tipopagoSelect.appendChild(option);
+            });
+        }
+
+        // Aplicar filtros
+        function applyFilters() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const bancoFilter = document.getElementById('bancoFilter').value;
+            const tipoFilter = document.getElementById('tipoFilter').value;
+            const tipopagoFilter = document.getElementById('tipopagoFilter').value;
+
+            filteredData = allData.filter(row => {
+                const matchSearch = Object.values(row).some(v => 
+                    v.toLowerCase().includes(searchTerm)
+                );
+                const matchBanco = !bancoFilter || row['Banco'] === bancoFilter;
+                const matchTipo = !tipoFilter || row['Tipo'] === tipoFilter;
+                const matchTipopago = !tipopagoFilter || row['Tipo de pago'] === tipopagoFilter;
+
+                return matchSearch && matchBanco && matchTipo && matchTipopago;
+            });
+
+            currentPage = 1;
+            displayData();
+            displayStats();
+        }
+
+        // Mostrar datos en tabla
+        function displayData() {
+            const tableContainer = document.getElementById('tableContainer');
+
+            if (filteredData.length === 0) {
+                tableContainer.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
+                return;
+            }
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            const pageData = filteredData.slice(start, end);
+
+            const headers = ['Fecha', 'Banco', 'Importe', 'Comentario', 'Tipo', 'Tipo de pago', 'Cheque'];
+            
+            let html = `
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                ${headers.map(h => `<th>${h}</th>`).join('')}
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            pageData.forEach(row => {
+                html += '<tr>';
+                headers.forEach(header => {
+                    html += `<td>${row[header] || '-'}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            // Paginación
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (totalPages > 1) {
+                html += '<div class="pagination">';
+                
+                if (currentPage > 1) {
+                    html += `<button class="page-btn" onclick="goToPage(1)">« Primera</button>`;
+                    html += `<button class="page-btn" onclick="goToPage(${currentPage - 1})">‹ Anterior</button>`;
+                }
+
+                html += `<span class="page-info">Página ${currentPage} de ${totalPages}</span>`;
+
+                if (currentPage < totalPages) {
+                    html += `<button class="page-btn" onclick="goToPage(${currentPage + 1})">Siguiente ›</button>`;
+                    html += `<button class="page-btn" onclick="goToPage(${totalPages})">Última »</button>`;
+                }
+
+                html += '</div>';
+            }
+
+            tableContainer.innerHTML = html;
+        }
+
+        // Mostrar estadísticas
+        function displayStats() {
+            const statsContainer = document.getElementById('statsContainer');
+            
+            if (filteredData.length === 0) {
+                statsContainer.innerHTML = '';
+                return;
+            }
+
+            const totalRegistros = filteredData.length;
+            const totalImporte = filteredData.reduce((sum, row) => {
+                const importe = parseFloat(row['Importe'] || 0);
+                return sum + (isNaN(importe) ? 0 : importe);
+            }, 0);
+
+            const bancos = new Set(filteredData.map(d => d['Banco'])).size;
+
+            let html = `
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-label">Registros</div>
+                        <div class="stat-value">${totalRegistros}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Importe</div>
+                        <div class="stat-value">$${totalImporte.toLocaleString('es-ES', {maximumFractionDigits: 2})}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Bancos Únicos</div>
+                        <div class="stat-value">${bancos}</div>
+                    </div>
+                </div>
+            `;
+
+            statsContainer.innerHTML = html;
+        }
+
+        // Ir a página
+        function goToPage(page) {
+            currentPage = page;
+            displayData();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Exportar a CSV
+        function exportToCSV() {
+            if (filteredData.length === 0) {
+                alert('No hay datos para exportar');
+                return;
+            }
+
+            const headers = ['Fecha', 'Banco', 'Importe', 'Comentario', 'Tipo', 'Tipo de pago', 'Cheque'];
+            let csv = headers.join(',') + '\n';
+
+            filteredData.forEach(row => {
+                const values = headers.map(h => {
+                    let val = row[h] || '';
+                    if (val.includes(',') || val.includes('"')) {
+                        val = `"${val.replace(/"/g, '""')}"`;
+                    }
+                    return val;
+                });
+                csv += values.join(',') + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `EDO_Salarios_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Event listeners
+        document.getElementById('filterBtn').addEventListener('click', applyFilters);
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') applyFilters();
+        });
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('bancoFilter').value = '';
+            document.getElementById('tipoFilter').value = '';
+            document.getElementById('tipopagoFilter').value = '';
+            filteredData = [...allData];
+            currentPage = 1;
+            displayData();
+            displayStats();
+        });
+        document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+
+        // Cargar datos al iniciar
+        loadData();
+    </script>
+</body>
+</html>
