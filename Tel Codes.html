@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Códigos Telefónicos - ValCusySoft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .selector-container {
+            margin-bottom: 30px;
+        }
+
+        .selector-container label {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .selector-container select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .selector-container select:hover {
+            border-color: #764ba2;
+        }
+
+        .selector-container select:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 20px;
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back {
+            padding: 10px 18px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: #764ba2;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .phone-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .country-flag {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+
+        .country-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .city-name {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 25px;
+        }
+
+        .phone-code-section {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .phone-code-item {
+            margin-bottom: 20px;
+        }
+
+        .phone-code-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .code-label {
+            font-size: 12px;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .code-value {
+            font-size: 32px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .detail-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .detail-label {
+            font-size: 11px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-size: 18px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .additional-info {
+            margin-top: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .additional-info h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .info-table td:first-child {
+            font-weight: 600;
+            color: #667eea;
+            width: 40%;
+        }
+
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 18px;
+            padding: 40px;
+        }
+
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c33;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .country-flag {
+                font-size: 60px;
+            }
+
+            .country-name {
+                font-size: 24px;
+            }
+
+            .code-value {
+                font-size: 24px;
+            }
+
+            .phone-info {
+                padding: 25px;
+            }
+
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-back {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Códigos Telefónicos</h1>
+            <p>Códigos internacionales por ciudad</p>
+        </div>
+
+        <div class="header-controls" id="headerControls" style="display: none;">
+            <button class="btn-back" id="btnBack">← Volver a Seleccionar</button>
+        </div>
+
+        <div class="selector-container" id="selectorContainer">
+            <label for="citySelect">Selecciona un país/ciudad:</label>
+            <select id="citySelect">
+                <option value="">-- Elige un país --</option>
+            </select>
+        </div>
+
+        <div id="errorContainer"></div>
+        <div id="phoneContainer"></div>
+    </div>
+
+    <script>
+        // Base de datos de códigos telefónicos - Capitales de Latinoamérica + USA + Canadá
+        const phoneCodes = [
+            // USA - Principales ciudades
+            { country: 'Estados Unidos', city: 'New York', flag: '🇺🇸', countryCode: '+1', areaCode: '212', timezone: 'EST (UTC-5)', region: 'Nueva York', population: '8.3M', continent: 'América del Norte' },
+            { country: 'Estados Unidos', city: 'Los Angeles', flag: '🇺🇸', countryCode: '+1', areaCode: '213', timezone: 'PST (UTC-8)', region: 'California', population: '3.9M', continent: 'América del Norte' },
+            { country: 'Estados Unidos', city: 'Chicago', flag: '🇺🇸', countryCode: '+1', areaCode: '312', timezone: 'CST (UTC-6)', region: 'Illinois', population: '2.7M', continent: 'América del Norte' },
+            { country: 'Estados Unidos', city: 'Miami', flag: '🇺🇸', countryCode: '+1', areaCode: '305', timezone: 'EST (UTC-5)', region: 'Florida', population: '467K', continent: 'América del Norte' },
+            { country: 'Estados Unidos', city: 'Washington DC', flag: '🇺🇸', countryCode: '+1', areaCode: '202', timezone: 'EST (UTC-5)', region: 'Distrito de Columbia', population: '705K', continent: 'América del Norte' },
+            
+            // Canadá
+            { country: 'Canadá', city: 'Toronto', flag: '🇨🇦', countryCode: '+1', areaCode: '416', timezone: 'EST (UTC-5)', region: 'Ontario', population: '2.9M', continent: 'América del Norte' },
+            { country: 'Canadá', city: 'Vancouver', flag: '🇨🇦', countryCode: '+1', areaCode: '604', timezone: 'PST (UTC-8)', region: 'Columbia Británica', population: '675K', continent: 'América del Norte' },
+            { country: 'Canadá', city: 'Montreal', flag: '🇨🇦', countryCode: '+1', areaCode: '514', timezone: 'EST (UTC-5)', region: 'Quebec', population: '4.3M', continent: 'América del Norte' },
+            
+            // México
+            { country: 'México', city: 'Ciudad de México', flag: '🇲🇽', countryCode: '+52', areaCode: '55', timezone: 'CST (UTC-6)', region: 'CDMX', population: '21.6M', continent: 'América del Norte' },
+            
+            // América Central
+            { country: 'Guatemala', city: 'Ciudad de Guatemala', flag: '🇬🇹', countryCode: '+502', areaCode: '2', timezone: 'CST (UTC-6)', region: 'Guatemala', population: '3.0M', continent: 'América Central' },
+            { country: 'Honduras', city: 'Tegucigalpa', flag: '🇭🇳', countryCode: '+504', areaCode: '2', timezone: 'CST (UTC-6)', region: 'Francisco Morazán', population: '1.4M', continent: 'América Central' },
+            { country: 'El Salvador', city: 'San Salvador', flag: '🇸🇻', countryCode: '+503', areaCode: '2', timezone: 'CST (UTC-6)', region: 'San Salvador', population: '2.4M', continent: 'América Central' },
+            { country: 'Nicaragua', city: 'Managua', flag: '🇳🇮', countryCode: '+505', areaCode: '2', timezone: 'CST (UTC-6)', region: 'Managua', population: '1.1M', continent: 'América Central' },
+            { country: 'Costa Rica', city: 'San José', flag: '🇨🇷', countryCode: '+506', areaCode: '2', timezone: 'CST (UTC-6)', region: 'San José', population: '2.4M', continent: 'América Central' },
+            { country: 'Panamá', city: 'Panamá', flag: '🇵🇦', countryCode: '+507', areaCode: '2', timezone: 'EST (UTC-5)', region: 'Panamá', population: '1.9M', continent: 'América Central' },
+            
+            // Sudamérica - Capitales
+            { country: 'Colombia', city: 'Bogotá', flag: '🇨🇴', countryCode: '+57', areaCode: '1', timezone: 'COT (UTC-5)', region: 'Cundinamarca', population: '8.2M', continent: 'América del Sur' },
+            { country: 'Venezuela', city: 'Caracas', flag: '🇻🇪', countryCode: '+58', areaCode: '212', timezone: 'VET (UTC-4)', region: 'Distrito Capital', population: '4.1M', continent: 'América del Sur' },
+            { country: 'Guyana', city: 'Georgetown', flag: '🇬🇾', countryCode: '+592', areaCode: '2', timezone: 'GYT (UTC-4)', region: 'Demerara-Mahaica', population: '235K', continent: 'América del Sur' },
+            { country: 'Surinam', city: 'Paramaribo', flag: '🇸🇷', countryCode: '+597', areaCode: '4', timezone: 'SRT (UTC-3)', region: 'Paramaribo', population: '469K', continent: 'América del Sur' },
+            { country: 'Ecuador', city: 'Quito', flag: '🇪🇨', countryCode: '+593', areaCode: '2', timezone: 'ECT (UTC-5)', region: 'Pichincha', population: '1.9M', continent: 'América del Sur' },
+            { country: 'Perú', city: 'Lima', flag: '🇵🇪', countryCode: '+51', areaCode: '1', timezone: 'PET (UTC-5)', region: 'Lima', population: '10.5M', continent: 'América del Sur' },
+            { country: 'Brasil', city: 'Brasilia', flag: '🇧🇷', countryCode: '+55', areaCode: '61', timezone: 'BRT (UTC-3)', region: 'Distrito Federal', population: '3.0M', continent: 'América del Sur' },
+            { country: 'Brasil', city: 'São Paulo', flag: '🇧🇷', countryCode: '+55', areaCode: '11', timezone: 'BRT (UTC-3)', region: 'São Paulo', population: '12.3M', continent: 'América del Sur' },
+            { country: 'Brasil', city: 'Río de Janeiro', flag: '🇧🇷', countryCode: '+55', areaCode: '21', timezone: 'BRT (UTC-3)', region: 'Río de Janeiro', population: '6.7M', continent: 'América del Sur' },
+            { country: 'Bolivia', city: 'La Paz', flag: '🇧🇴', countryCode: '+591', areaCode: '2', timezone: 'BOT (UTC-4)', region: 'La Paz', population: '2.0M', continent: 'América del Sur' },
+            { country: 'Paraguay', city: 'Asunción', flag: '🇵🇾', countryCode: '+595', areaCode: '21', timezone: 'PYT (UTC-4)', region: 'Asunción', population: '2.3M', continent: 'América del Sur' },
+            { country: 'Argentina', city: 'Buenos Aires', flag: '🇦🇷', countryCode: '+54', areaCode: '11', timezone: 'ART (UTC-3)', region: 'Buenos Aires', population: '15.6M', continent: 'América del Sur' },
+            { country: 'Chile', city: 'Santiago', flag: '🇨🇱', countryCode: '+56', areaCode: '2', timezone: 'CLT (UTC-3)', region: 'Metropolitana', population: '6.3M', continent: 'América del Sur' },
+            { country: 'Uruguay', city: 'Montevideo', flag: '🇺🇾', countryCode: '+598', areaCode: '2', timezone: 'UYT (UTC-3)', region: 'Montevideo', population: '1.3M', continent: 'América del Sur' },
+        ];
+
+        // Llenar el selector
+        function fillCitySelector() {
+            const select = document.getElementById('citySelect');
+            phoneCodes.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${item.flag} ${item.country} - ${item.city}`;
+                select.appendChild(option);
+            });
+        }
+
+        // Mostrar información del código telefónico
+        function displayPhoneInfo(data) {
+            const container = document.getElementById('phoneContainer');
+            const errorContainer = document.getElementById('errorContainer');
+            
+            errorContainer.innerHTML = '';
+            document.getElementById('headerControls').style.display = 'flex';
+            document.getElementById('selectorContainer').style.display = 'none';
+
+            const fullPhone = `${data.countryCode} ${data.areaCode}`;
+
+            let html = `
+                <div class="phone-info">
+                    <div class="country-flag">${data.flag}</div>
+                    <div class="country-name">${data.country}</div>
+                    <div class="city-name">${data.city}</div>
+                    
+                    <div class="phone-code-section">
+                        <div class="details-grid">
+                            <div class="phone-code-item">
+                                <div class="code-label">Código de País</div>
+                                <div class="code-value">${data.countryCode}</div>
+                            </div>
+                            <div class="phone-code-item">
+                                <div class="code-label">Código de Área</div>
+                                <div class="code-value">${data.areaCode}</div>
+                            </div>
+                            <div class="phone-code-item">
+                                <div class="code-label">Número Ejemplo</div>
+                                <div class="code-value">${fullPhone} XXXX</div>
+                            </div>
+                        </div>
+
+                        <div class="details-grid" style="margin-top: 20px;">
+                            <div class="detail-box">
+                                <div class="detail-label">Zona Horaria</div>
+                                <div class="detail-value">${data.timezone}</div>
+                            </div>
+                            <div class="detail-box">
+                                <div class="detail-label">Región</div>
+                                <div class="detail-value">${data.region}</div>
+                            </div>
+                            <div class="detail-box">
+                                <div class="detail-label">Continente</div>
+                                <div class="detail-value">${data.continent}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="additional-info">
+                    <h3>📋 Información Detallada</h3>
+                    <table class="info-table">
+                        <tr>
+                            <td>País:</td>
+                            <td>${data.country}</td>
+                        </tr>
+                        <tr>
+                            <td>Ciudad Capital:</td>
+                            <td>${data.city}</td>
+                        </tr>
+                        <tr>
+                            <td>Código Internacional:</td>
+                            <td><strong>${data.countryCode}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Código Local/Área:</td>
+                            <td><strong>${data.areaCode}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Formato Completo:</td>
+                            <td><code>${fullPhone}-XXXX</code></td>
+                        </tr>
+                        <tr>
+                            <td>Zona Horaria:</td>
+                            <td>${data.timezone}</td>
+                        </tr>
+                        <tr>
+                            <td>Región/Estado:</td>
+                            <td>${data.region}</td>
+                        </tr>
+                        <tr>
+                            <td>Continente:</td>
+                            <td>${data.continent}</td>
+                        </tr>
+                        <tr>
+                            <td>Población Aproximada:</td>
+                            <td>${data.population}</td>
+                        </tr>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Volver a la vista principal
+        function goBack() {
+            document.getElementById('selectorContainer').style.display = 'block';
+            document.getElementById('headerControls').style.display = 'none';
+            document.getElementById('phoneContainer').innerHTML = '';
+            document.getElementById('errorContainer').innerHTML = '';
+            document.getElementById('citySelect').value = '';
+        }
+
+        // Event listener para el selector
+        document.getElementById('citySelect').addEventListener('change', (e) => {
+            if (e.target.value !== '') {
+                const data = phoneCodes[parseInt(e.target.value)];
+                displayPhoneInfo(data);
+            }
+        });
+
+        // Event listener para el botón de volver
+        document.getElementById('btnBack').addEventListener('click', goBack);
+
+        // Llenar el selector al cargar
+        fillCitySelector();
+    </script>
+</body>
+</html>
