@@ -250,25 +250,38 @@
             background: #218838;
         }
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
+        .results-section {
+            margin-top: 30px;
+            animation: slideIn 0.3s ease;
+        }
 
-            .header h1 {
-                font-size: 22px;
-            }
+        .results-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px 10px 0 0;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-            .controls-grid {
-                grid-template-columns: 1fr;
-            }
+        .result-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
 
-            table {
-                font-size: 12px;
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
             }
-
-            th, td {
-                padding: 8px;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
@@ -316,7 +329,8 @@
         <div id="statsContainer"></div>
         <div id="errorContainer"></div>
         <div id="loadingContainer"></div>
-        <div id="tableContainer"></div>
+        
+        <div id="resultsContainer"></div>
     </div>
 
     <script>
@@ -435,10 +449,10 @@
 
         // Mostrar datos en tabla
         function displayData() {
-            const tableContainer = document.getElementById('tableContainer');
+            const resultsContainer = document.getElementById('resultsContainer');
 
             if (filteredData.length === 0) {
-                tableContainer.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
+                resultsContainer.innerHTML = '';
                 return;
             }
 
@@ -449,14 +463,19 @@
             const headers = ['Fecha', 'Banco', 'Importe', 'Comentario', 'Tipo', 'Tipo de pago', 'Cheque'];
             
             let html = `
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                ${headers.map(h => `<th>${h}</th>`).join('')}
-                            </tr>
-                        </thead>
-                        <tbody>
+                <div class="results-section">
+                    <div class="results-header">
+                        <span>📊 Resultados de la Búsqueda</span>
+                        <span class="result-count">${filteredData.length} registros encontrados</span>
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    ${headers.map(h => `<th>${h}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
             `;
 
             pageData.forEach(row => {
@@ -468,9 +487,9 @@
             });
 
             html += `
-                        </tbody>
-                    </table>
-                </div>
+                            </tbody>
+                        </table>
+                    </div>
             `;
 
             // Paginación
@@ -493,7 +512,8 @@
                 html += '</div>';
             }
 
-            tableContainer.innerHTML = html;
+            html += '</div>';
+            resultsContainer.innerHTML = html;
         }
 
         // Mostrar estadísticas
@@ -584,7 +604,7 @@
             document.getElementById('tipopagoFilter').value = '';
             filteredData = [...allData];
             currentPage = 1;
-            displayData();
+            document.getElementById('resultsContainer').innerHTML = '';
             displayStats();
         });
         document.getElementById('exportBtn').addEventListener('click', exportToCSV);
